@@ -1,0 +1,199 @@
+import json
+import socket
+import threading
+import unittest
+from pathlib import Path
+from urllib.error import HTTPError
+from urllib.request import Request, urlopen
+
+from playbook.core import (
+    AgentPortal,
+    CodebaseIndex,
+    DeviceMemoryTracker,
+    LogConverter,
+    MockSmnClient,
+    OidcProviderService,
+    ProductCatalog,
+    SmnAlertPlugin,
+    SmnConfig,
+    TcpScanner,
+    User,
+    calculate_category_inventory,
+    calculate_roi,
+    diagnose_maturity,
+    group_users_by_age,
+)
+from playbook.server import make_server
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+class CoreCasesTest(unittest.TestCase):
+    def test_grouping_filters_invalid_users(self):
+        grouped = group_users_by_age([User("A", 28), None, User("B", -1), User("C", 28)])
+        self.assertEqual(["A", "C"], [user.name for user in grouped[28]])
+        self.assertNotIn(-1, grouped)
+        self.assertEqual({}, group_users_by_age(None))
+
+    def test_inventory_refactor_preserves_behavior(self):
+        self.assertEqual(10, calculate_category_inventory({"p1": 10, "p2": None}, {"p1": "book", "p2": "book"}, "book"))
+        self.assertEqual(0, calculate_category_inventory(None, {}, "book"))
+
+    def test_product_catalog_crud_and_atomic_stock(self):
+        catalog = ProductCatalog()
+        created = catalog.create({"name": "测试商品", "price": 10, "stock": 2})
+        self.assertEqual("测试商品", catalog.get(created["id"])["name"])
+        order = catalog.reserve([{"productId": created["id"], "quantity": 2}])
+        self.assertEqual(20.0, order["total"])
+        with self.assertRaises(ValueError):
+            catalog.reserve([{"productId": created["id"], "quantity": 1}])
+        self.assertTrue(catalog.delete(created["id"]))
+
+    def test_codebase_index_never_invents_missing_symbols(self):
+        index = CodebaseIndex([ROOT / "java"])
+        self.assertGreater(index.build(), 5)
+        answer = index.answer("解释 ProductController 和 NotARealClass")
+        self.assertIn("ProductController", answer["matchedSymbols"])
+        self.assertNotIn("NotARealClass", answer["matchedSymbols"])
+
+    def test_log_converter_isolates_bad_lines(self):
+        converter = LogConverter()
+        result = converter.convert_lines(["100|work|X|1|2|50", "bad|row"])
+        self.assertEqual(1, len(result["traceEvents"]))
+        self.assertEqual(1, result["metadata"]["skippedLines"])
+        self.assertEqual(50, result["traceEvents"][0]["dur"])
+
+    def test_smn_plugin_reuses_client_for_test_and_alert(self):
+        client = MockSmnClient()
+        plugin = SmnAlertPlugin(SmnConfig("https://smn.demo.local", "p", "urn:smn:region:p:t"), client)
+        self.assertEqual("TEST_SEND", plugin.send("test", "body", test=True)["mode"])
+        self.assertEqual("ALERT", plugin.send("alert", "body")["mode"])
+        self.assertEqual(2, len(client.messages))
+        with self.assertRaises(ValueError):
+            SmnConfig("http://unsafe", "p", "urn:smn:r:p:t").validate()
+
+    def test_oidc_trust_boundary_and_exchange(self):
+        service = OidcProviderService()
+        provider = service.create_provider({"issuer": "https://idp.demo.local", "clientIds": ["client-a"]})
+        self.assertEqual(900, service.exchange(provider["id"], "client-a", "demo.token")["expiresIn"])
+        with self.assertRaises(PermissionError):
+            service.exchange(provider["id"], "client-b", "demo.token")
+        with self.assertRaises(ValueError):
+            service.create_provider({"issuer": "http://169.254.169.254", "clientIds": ["x"]})
+
+    def test_agent_lifecycle_rejects_illegal_transition(self):
+        portal = AgentPortal()
+        created = portal.create({"name": "Demo", "tags": ["制造"]})
+        published = portal.transition(created["id"], "PUBLISHED")
+        self.assertEqual("PUBLISHED", published["state"])
+        with self.assertRaises(ValueError):
+            portal.transition(created["id"], "DRAFT")
+
+    def test_device_memory_reference_model(self):
+        tracker = DeviceMemoryTracker(128, 64)
+        tracker.report(1, 32)
+        tracker.report(2, 48)
+        self.assertEqual(272, tracker.total())
+        tracker.process_exit(1)
+        self.assertEqual(240, tracker.total())
+        self.assertEqual(300, tracker.retry_schedule()["windowSeconds"])
+
+    def test_maturity_and_roi_book_examples(self):
+        self.assertEqual("生成膨胀期", diagnose_maturity(.68, .31, .27)["stage"])
+        self.assertEqual("规范内耗期", diagnose_maturity(.45, .12, .41)["stage"])
+        roi = calculate_roi(345, 278, .71, .29, .19)
+        self.assertAlmostEqual(.4083, roi["nec"], places=4)
+        self.assertAlmostEqual(-.4933, roi["netRoi"], places=3)
+
+    def test_tcp_scanner_detects_open_and_closed_local_ports(self):
+        listener = socket.socket()
+        listener.bind(("127.0.0.1", 0))
+        listener.listen(1)
+        open_port = listener.getsockname()[1]
+        threading.Thread(target=lambda: listener.accept()[0].close(), daemon=True).start()
+        probe = socket.socket()
+        probe.bind(("127.0.0.1", 0))
+        closed_port = probe.getsockname()[1]
+        probe.close()
+        results = TcpScanner(timeout=.2).scan_many([("127.0.0.1", open_port), ("127.0.0.1", closed_port)])
+        listener.close()
+        self.assertEqual([True, False], [row.reachable for row in results])
+
+
+class RepositoryContractTest(unittest.TestCase):
+    def test_manifest_has_20_unique_runnable_cases(self):
+        cases = json.loads((ROOT / "cases.json").read_text(encoding="utf-8"))
+        self.assertEqual(20, len(cases))
+        self.assertEqual([f"{value:02d}" for value in range(1, 21)], [case["id"] for case in cases])
+        for case in cases:
+            self.assertTrue(case["entry"].startswith("python3 demo.py case "))
+            self.assertIn("PDF", case["source"])
+
+    def test_web_pages_are_self_contained(self):
+        expected = ["portal", "meeting-room", "openai-mock", "dashboard", "api-hub", "ecommerce", "agent-portal", "harmony-shop", "metrics", "roi"]
+        for name in expected:
+            text = (ROOT / "web" / f"{name}.html").read_text(encoding="utf-8")
+            self.assertIn("<!doctype html>", text.lower())
+            self.assertNotIn('src="http', text)
+            self.assertNotIn('href="http', text)
+
+    def test_sdd_evidence_chain_is_complete(self):
+        for name in ["log-converter", "smn-alert-plugin", "iam-oidc", "device-memory"]:
+            directory = ROOT / ".codeartsdoer/specs" / name
+            for document in ["spec.md", "design.md", "tasks.md"]:
+                self.assertGreater((directory / document).stat().st_size, 100)
+
+
+class HttpDemoTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.server = make_server("127.0.0.1", 0)
+        cls.thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
+        cls.thread.start()
+        cls.base = f"http://127.0.0.1:{cls.server.server_address[1]}"
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.server.shutdown()
+        cls.server.server_close()
+        cls.thread.join(timeout=2)
+
+    def request(self, path, method="GET", payload=None):
+        data = json.dumps(payload).encode() if payload is not None else None
+        request = Request(self.base + path, data=data, method=method, headers={"Content-Type": "application/json"})
+        with urlopen(request, timeout=3) as response:
+            return response.status, response.headers, json.loads(response.read().decode())
+
+    def test_portal_health_and_products(self):
+        with urlopen(self.base + "/", timeout=3) as response:
+            self.assertIn("20 个可运行案例", response.read().decode())
+        status, _, health = self.request("/api/health")
+        self.assertEqual((200, 20), (status, health["examples"]))
+        status, _, created = self.request("/api/products", "POST", {"name": "新增商品", "price": 12.5, "stock": 3})
+        self.assertEqual((201, "新增商品"), (status, created["data"]["name"]))
+
+    def test_openai_tool_call_two_step_and_cors(self):
+        tools = [{"type": "function", "function": {"name": "get_weather"}}]
+        _, headers, first = self.request("/v1/chat/completions", "POST", {"messages": [{"role": "user", "content": "weather"}], "tools": tools})
+        self.assertEqual("*", headers["Access-Control-Allow-Origin"])
+        self.assertEqual("tool_calls", first["choices"][0]["finish_reason"])
+        call = first["choices"][0]["message"]["tool_calls"][0]
+        messages = [{"role": "user", "content": "weather"}, first["choices"][0]["message"], {"role": "tool", "tool_call_id": call["id"], "content": "sunny"}]
+        _, _, second = self.request("/v1/chat/completions", "POST", {"messages": messages, "tools": tools})
+        self.assertEqual("stop", second["choices"][0]["finish_reason"])
+
+    def test_oidc_http_contract(self):
+        _, _, created = self.request("/api/oidc/providers", "POST", {"issuer": "https://idp.demo.local", "clientIds": ["client-http"]})
+        provider_id = created["data"]["id"]
+        _, _, exchanged = self.request(f"/api/oidc/providers/{provider_id}/exchange", "POST", {"clientId": "client-http", "subjectToken": "demo.subject"})
+        self.assertEqual(900, exchanged["data"]["expiresIn"])
+
+    def test_metrics_and_roi_http(self):
+        _, _, metric = self.request("/api/metrics/diagnose", "POST", {"generationRate": .68, "reworkRate": .31, "violationRate": .27})
+        self.assertEqual("生成膨胀期", metric["data"]["stage"])
+        _, _, roi = self.request("/api/roi/calculate", "POST", {"grossBenefit": 345, "totalCost": 278, "generationRate": .71, "reworkRate": .29, "violationRate": .19})
+        self.assertLess(roi["data"]["netRoi"], 0)
+
+
+if __name__ == "__main__":
+    unittest.main()
