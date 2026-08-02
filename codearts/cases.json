@@ -1,0 +1,166 @@
+[
+  {
+    "id": "01",
+    "mode": "Vibe-Coding",
+    "scene": "用户按年龄分组",
+    "context": ["#File java/UserGroupingDemo.java", "#File tests/test_playbook.py"],
+    "prompt": "请补全并审查用户按年龄分组逻辑：忽略 null 用户和负年龄，保持同年龄用户的输入顺序，不改变公开入口。先解释拟修改点，再做最小改动并运行案例验收。",
+    "acceptance": "python3 demo.py codearts verify 01"
+  },
+  {
+    "id": "02",
+    "mode": "Vibe-Coding",
+    "scene": "库存统计解释与重构",
+    "context": ["#File java/InventoryRefactorDemo.java", "#Symbol calculateCategoryInventory"],
+    "prompt": "先逐步解释库存统计函数的行为和边界，再在行为不变的前提下做最小优化，最后给出等价的 Stream 重构。必须保留 null 输入与 null 库存值的兼容性，并执行验收。",
+    "acceptance": "python3 demo.py codearts verify 02"
+  },
+  {
+    "id": "03",
+    "mode": "Vibe-Coding",
+    "scene": "商品管理项目级生成",
+    "context": ["#File java/ProductManagementDemo.java", "#File java/ProductControllerTest.java"],
+    "prompt": "基于现有单文件演示梳理商品 Controller、Service、Repository 的职责边界，检查 CRUD、参数校验和返回语义。仅在必要处修改，保持下载即运行，不引入外部依赖，完成后执行验收。",
+    "acceptance": "python3 demo.py codearts verify 03"
+  },
+  {
+    "id": "04",
+    "mode": "Vibe-Coding",
+    "scene": "商品控制器测试生成",
+    "context": ["#File java/ProductControllerTest.java", "#File java/ProductManagementDemo.java", "#TerminalLastCommand"],
+    "prompt": "为商品管理补充高价值测试，覆盖正常 CRUD、非法价格、缺货和不存在商品。不要只追求覆盖率；先列出风险，再生成测试，运行后根据真实失败修复。",
+    "acceptance": "python3 demo.py codearts verify 04"
+  },
+  {
+    "id": "05",
+    "mode": "Vibe-Coding",
+    "scene": "代码库上下文问答",
+    "context": ["#File playbook/core.py", "#File java/ProductManagementDemo.java", "#Git"],
+    "prompt": "请基于仓库真实代码回答：ProductController 到 ProductRepository 的调用链是什么？列出可定位的文件和符号。若问题中的符号不存在，必须明确说明未找到，不得臆造。随后运行索引演示验收。",
+    "acceptance": "python3 demo.py codearts verify 05"
+  },
+  {
+    "id": "06",
+    "mode": "Vibe-Coding",
+    "scene": "认证超时协同排查",
+    "context": ["#File playbook/core.py", "#File AGENTS.md", "#Git", "#TerminalLastCommand"],
+    "prompt": "模拟排查认证服务超时：分别整理文件证据、Git 变更、终端证据和项目规则，区分事实、推断与待验证项，给出最小验证顺序。不要虚构日志或生产配置。",
+    "acceptance": "python3 demo.py codearts verify 06"
+  },
+  {
+    "id": "07",
+    "mode": "Vibe-Coding",
+    "scene": "会议室预约原型",
+    "context": ["#File web/meeting-room.html", "#File web/assets/styles.css", "#File web/assets/common.js"],
+    "prompt": "在不引入框架或 CDN 的前提下迭代会议室预约原型：保留城市、楼宇、人数和类型筛选，实现会议室选择、连续时段选择、预约摘要与二次确认弹窗。保持移动端可用并执行功能验收。",
+    "acceptance": "python3 demo.py codearts verify 07"
+  },
+  {
+    "id": "08",
+    "mode": "Vibe-Coding",
+    "scene": "OpenAI 兼容 Mock 与 SSE",
+    "context": ["#File playbook/server.py", "#File web/openai-mock.html", "#File tests/test_playbook.py"],
+    "prompt": "检查本地 OpenAI 兼容 Mock：必须完成 assistant tool_calls → tool result → assistant stop 两阶段闭环，同时支持 CORS 与 SSE done 事件。先对照协议指出缺口，再最小修改并执行验收。",
+    "acceptance": "python3 demo.py codearts verify 08"
+  },
+  {
+    "id": "09",
+    "mode": "Vibe-Coding",
+    "scene": "SaaS 产品分析看板",
+    "context": ["#File web/dashboard.html", "#File web/assets/styles.css", "#File web/assets/common.js"],
+    "prompt": "按现有设计语言改进 SaaS 产品分析看板，保留 KPI、时间范围、对比切换和功能排行折叠交互。优先局部修改，避免重写页面；修改后检查响应式布局和关键交互。",
+    "acceptance": "python3 demo.py codearts verify 09"
+  },
+  {
+    "id": "10",
+    "mode": "Vibe-Coding",
+    "scene": "公网资产 TCP 连通性扫描",
+    "context": ["#File playbook/core.py", "#File data/cloud_assets_scan.csv", "#File tests/test_playbook.py"],
+    "prompt": "审查 TCP 连通性扫描逻辑，要求并发执行、每目标独立超时、异常隔离并输出结构化结果。演示只能扫描本地测试端口，不得访问未授权公网资产，完成后执行验收。",
+    "acceptance": "python3 demo.py codearts verify 10"
+  },
+  {
+    "id": "11",
+    "mode": "Vibe-Coding",
+    "scene": "API Hub 接口管理工具",
+    "context": ["#File web/api-hub.html", "#File web/assets/styles.css", "#File web/assets/common.js"],
+    "prompt": "以六轮小步迭代方式检查 API Hub：目录与搜索、在线调试、参数编辑、Mock JSON 编辑、localStorage 持久化、导入导出和深色模式。无效 JSON 必须显示错误且不能覆盖有效数据。完成后验收。",
+    "acceptance": "python3 demo.py codearts verify 11"
+  },
+  {
+    "id": "12",
+    "mode": "Vibe-Coding",
+    "scene": "电商全栈线性演进",
+    "context": ["#File web/ecommerce.html", "#File playbook/server.py", "#Symbol ProductCatalog", "#File tests/test_playbook.py"],
+    "prompt": "验证电商从页面到 API 的闭环：商品列表、加购、创建订单、库存原子扣减和缺货失败。保持标准库实现，不引入数据库；不得出现部分扣减，执行 API 与页面验收。",
+    "acceptance": "python3 demo.py codearts verify 12"
+  },
+  {
+    "id": "13",
+    "mode": "Spec-Driven",
+    "scene": "Chrome Tracing 日志转换器",
+    "context": ["#File .codeartsdoer/specs/log-converter/spec.md", "#File .codeartsdoer/specs/log-converter/design.md", "#File .codeartsdoer/specs/log-converter/tasks.md", "#File data/sample.log", "#Symbol LogConverter"],
+    "prompt": "按现有 Spec→Design→Tasks 证据链检查日志转换器实现。合法行应生成 Chrome Tracing traceEvents，错误行必须隔离并报告而不能中断批次。先核对需求覆盖，再执行案例验收。",
+    "acceptance": "python3 demo.py codearts verify 13",
+    "specDir": ".codeartsdoer/specs/log-converter"
+  },
+  {
+    "id": "14",
+    "mode": "Spec-Driven",
+    "scene": "DolphinScheduler SMN 插件",
+    "context": ["#File .codeartsdoer/specs/smn-alert-plugin/spec.md", "#File .codeartsdoer/specs/smn-alert-plugin/design.md", "#File .codeartsdoer/specs/smn-alert-plugin/tasks.md", "#Symbol SmnAlertPlugin"],
+    "prompt": "按 SDD 证据链验证 SMN 告警插件：配置前置校验、Test Send 与真实告警复用同一路径、消息 ID 回传。默认必须使用 Mock，禁止写入真实 AK/SK 或调用外部端点。",
+    "acceptance": "python3 demo.py codearts verify 14",
+    "specDir": ".codeartsdoer/specs/smn-alert-plugin"
+  },
+  {
+    "id": "15",
+    "mode": "Spec-Driven",
+    "scene": "IAM OIDC 信任委托",
+    "context": ["#File .codeartsdoer/specs/iam-oidc/spec.md", "#File .codeartsdoer/specs/iam-oidc/design.md", "#File contracts/oidc-provider.openapi.yaml", "#Symbol OidcProviderService"],
+    "prompt": "以 OpenAPI 契约和 SDD 文档为准审查 OIDC Provider 与临时凭证交换。重点验证 HTTPS、Client ID、SSRF 边界和 15 分钟临时凭证；不得降低安全校验或加入真实密钥。",
+    "acceptance": "python3 demo.py codearts verify 15",
+    "specDir": ".codeartsdoer/specs/iam-oidc"
+  },
+  {
+    "id": "16",
+    "mode": "Vibe-Coding",
+    "scene": "制造企业 AI 智能体门户",
+    "context": ["#File web/agent-portal.html", "#File playbook/server.py", "#Symbol AgentPortal", "#File tests/test_playbook.py"],
+    "prompt": "检查制造企业智能体门户的创建、标签筛选和状态生命周期。演示 DRAFT→PUBLISHED→OFFLINE，允许 OFFLINE→PUBLISHED 重新发布，其他非法回退必须失败；保持页面和 API 行为一致并执行验收。",
+    "acceptance": "python3 demo.py codearts verify 16"
+  },
+  {
+    "id": "17",
+    "mode": "Spec-Driven",
+    "scene": "设备管理面内存统计",
+    "context": ["#File .codeartsdoer/specs/device-memory/spec.md", "#File .codeartsdoer/specs/device-memory/design.md", "#File device/device_memory.c", "#File device/device_memory_test.c"],
+    "prompt": "按增量 SDD 规格审查 C11 设备内存统计：进程上报使用 upsert、退出删除、仅主进程查询、避免 32 位溢出，重试窗口为 300 秒。保持无动态分配并用 -Wall -Wextra -Werror 验收。",
+    "acceptance": "python3 demo.py codearts verify 17",
+    "specDir": ".codeartsdoer/specs/device-memory"
+  },
+  {
+    "id": "18",
+    "mode": "Vibe-Coding",
+    "scene": "鸿蒙云手机电商应用",
+    "context": ["#File harmony/EntryAbility.ets", "#File harmony/Index.ets", "#File web/harmony-shop.html"],
+    "prompt": "对照 ArkTS 源码与 Web 云手机替身检查电商首页、商品渲染和 @State 加购更新。保持声明式 UI 与强类型风格；本地验收不依赖 DevEco 或真实云手机，并明确真实端云调试边界。",
+    "acceptance": "python3 demo.py codearts verify 18"
+  },
+  {
+    "id": "19",
+    "mode": "Vibe-Coding",
+    "scene": "AI 编码成熟度诊断",
+    "context": ["#File web/metrics.html", "#Symbol diagnose_maturity", "#File tests/test_playbook.py"],
+    "prompt": "验证生成率、返工率和规范违规率的联合诊断，展示单指标好看但系统性质量不足的反例，并给出可执行改进建议。不得把示例指标解释为客户真实数据。",
+    "acceptance": "python3 demo.py codearts verify 19"
+  },
+  {
+    "id": "20",
+    "mode": "Vibe-Coding",
+    "scene": "AI 编程净 ROI 测算",
+    "context": ["#File web/roi.html", "#Symbol calculate_roi", "#File tests/test_playbook.py"],
+    "prompt": "校验 AI 编程净 ROI 计算：使用 NEC 修正生成收益，计入返工与治理成本，并用书中 345、278、0.71、0.29、0.19 的样例复算。结果应为 NEC≈0.4083、净 ROI≈-0.4933，并标注假设边界。",
+    "acceptance": "python3 demo.py codearts verify 20"
+  }
+]

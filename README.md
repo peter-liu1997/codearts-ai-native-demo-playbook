@@ -1,11 +1,24 @@
 # CodeArts AI-Native 客户演示案例集
 
-本仓库把《The CodeArts Playbook for AI-Native Development》中可转化为程序的显式实践案例，整理成 20 个可重复、可验证、适合客户演示的单元。它不是书中截图的静态摘录，而是一套下载后即可运行的演示资产：有代码、有测试、有讲解、有失败分支，也有 Vibe Coding 到 SDD 的方法闭环。
+本仓库把《The CodeArts Playbook for AI-Native Development》中可转化为程序的显式实践案例，整理成 20 个可重复、可验证、适合客户演示的单元。它既是下载后即可运行的演示资产，也是可直接由华为云 CodeArts Agent IDE 识别的项目：包含项目规则、Project Skill、自定义命令、Vibe/Spec 模式卡和逐案例功能验收。
+
+## 在 CodeArts Agent IDE 中演示
+
+打开仓库根目录后，在码道对话中使用：
+
+```text
+/demo-list
+/demo-case 案例 07
+/demo-verify
+```
+
+项目级规则位于 `AGENTS.md`，Skill 位于 `.codeartsdoer/skills/`，自定义命令位于 `.codeartsdoer/commands/`；20 个场景的模式、上下文、提示词和验收命令位于 `codearts/cases.json`。完整操作见 [基于华为云码道的运行与客户演示指导](docs/CODEARTS-DEMO-GUIDE.md)。
 
 ## 三条命令开始演示
 
 ```bash
 python3 demo.py list
+python3 demo.py codearts list
 python3 demo.py verify
 python3 demo.py serve --port 8000
 ```
@@ -16,6 +29,10 @@ python3 demo.py serve --port 8000
 python3 demo.py case 01
 python3 demo.py case 13
 python3 demo.py case 20
+
+# 查看码道案例卡并做独立功能验收
+python3 demo.py codearts show 13
+python3 demo.py codearts verify 13
 ```
 
 ## 环境要求
@@ -31,9 +48,12 @@ python3 demo.py case 20
 
 - [示例总览与能力映射](docs/CASE-INVENTORY.md)：20 个案例、来源页、演示形态和码道能力。
 - [逐例客户演示指导](docs/DEMO-GUIDE.md)：每例的启动、讲解、操作、预期结果和复位方法。
+- [码道原生演示指导](docs/CODEARTS-DEMO-GUIDE.md)：在 CodeArts Agent IDE 中选择模式、加载上下文、使用 Skill/命令和逐例验收。
 - [原书提示词提炼](docs/PROMPTS.md)：把书中关键指令整理成可在码道中复用的提示词卡。
 - [提取范围与页码证据](docs/PDF-EXTRACTION-MAP.md)：说明什么被纳入、什么属于理论举例。
+- `AGENTS.md`、`.codeartsdoer/skills/`、`.codeartsdoer/commands/`：码道项目规则、项目级 Skill 和客户演示命令。
 - `.codeartsdoer/specs/`：日志转换、SMN 插件、IAM OIDC、设备内存四组 `spec.md → design.md → tasks.md` 证据链。
+- `.cloudbuild/build.yml`：CodeArts Repo 场景的代码化全量构建验证。
 - `contracts/`：IAM OIDC 控制面 OpenAPI 契约。
 - `java/`、`device/`、`harmony/`：Java、C、ArkTS 原语言样例。
 - `web/`：无需构建工具的客户交互页面。
@@ -43,7 +63,7 @@ python3 demo.py case 20
 
 `python3 demo.py verify` 会同时检查：
 
-1. Python 语法与 18 项单元/集成测试。
+1. Python 语法与单元/集成测试。
 2. 20 条案例清单、页码映射和入口完整性。
 3. 10 个 Web 页面不引用外部运行时或 CDN。
 4. OpenAI 兼容 Tool Calling 两阶段闭环、SSE 与 CORS。
@@ -51,12 +71,16 @@ python3 demo.py case 20
 6. Java 4 个程序编译执行。
 7. C11 在 `-Wall -Wextra -Werror` 下编译并通过测试。
 8. 四组 SDD `spec/design/tasks` 完整性。
+9. CodeArts 项目规则、Skill、自定义命令、20 张模式/上下文/提示词/验收案例卡。
 
 ## 与码道当前产品能力的对应
 
-仓库结构已按 2026 年 7 月官方文档校准：规范开发采用 `.codeartsdoer/specs/`，并映射 `/sdd-new`、`/sdd-design`、`/sdd-tasks`、`/sdd-apply` 四阶段；Codebase 案例采用“先建立索引、再基于真实符号回答”的口径。官方参考：
+仓库结构已按 2026 年 7 月官方文档校准：项目规则采用 `AGENTS.md`，项目 Skill 采用 `.codeartsdoer/skills/`，自定义命令采用 `.codeartsdoer/commands/`；规范开发采用 `.codeartsdoer/specs/`，并映射 `/sdd-new`、`/sdd-design`、`/sdd-tasks`、`/sdd-apply` 四阶段。官方参考：
 
-- [智能体对话与 Vibe / Spec-Driven 模式](https://support.huaweicloud.com/usermanual-codeartssnap/codeartsdoer_ug_0005.html)
+- [智能体对话与 Vibe / Spec-Driven 模式](https://support.huaweicloud.com/usermanual-codeartsagent/codeartsagent_ug_0005.html)
+- [项目级 Skills](https://support.huaweicloud.com/usermanual-codeartsagent/codeartsagent_ug_0024.html)
+- [项目规则与 AGENTS.md](https://support.huaweicloud.com/usermanual-codeartsagent/codeartsagent_ug_0019.html)
+- [自定义命令](https://support.huaweicloud.com/usermanual-cli/codeartsagent_cli_0010.html)
 - [SDD 标准工作流与斜杠命令](https://support.huaweicloud.com/bestpractice-codeartssnap/codeartsdoer_bp_0011.html)
 - [代码库索引](https://support.huaweicloud.com/usermanual-cli/codeartsagent_cli_0002.html)
 - [单元测试智能体](https://support.huaweicloud.com/usermanual-plugin/codeartsagent_plugin_0005.html)
@@ -72,4 +96,3 @@ python3 demo.py case 20
 ## 许可与说明
 
 仓库代码采用 MIT License。案例是根据用户提供的书稿重建的教学演示，不包含书中原始截图、客户源代码、真实密钥或专有数据；其中云服务与企业案例是最小可运行复现，不宣称替代生产实现。
-

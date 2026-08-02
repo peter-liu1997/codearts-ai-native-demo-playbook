@@ -1,0 +1,10 @@
+version: 2.0
+steps:
+  PRE_BUILD:
+    - sh:
+        inputs:
+          command: |
+            python3 --version
+            java -version
+            cc --version
+            python3 demo.py verify --verbose

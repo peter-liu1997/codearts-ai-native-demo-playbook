@@ -1,0 +1,8 @@
+*
+!.gitignore
+!specs/
+!specs/**
+!commands/
+!commands/**
+!skills/
+!skills/**

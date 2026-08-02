@@ -24,6 +24,7 @@ from playbook.core import (
     group_users_by_age,
 )
 from playbook.server import make_server
+from playbook.codearts import get_case, load_matrix, verify_case
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -142,6 +143,39 @@ class RepositoryContractTest(unittest.TestCase):
             directory = ROOT / ".codeartsdoer/specs" / name
             for document in ["spec.md", "design.md", "tasks.md"]:
                 self.assertGreater((directory / document).stat().st_size, 100)
+
+    def test_codearts_matrix_covers_all_cases(self):
+        cases = load_matrix()
+        self.assertEqual([f"{value:02d}" for value in range(1, 21)], [case["id"] for case in cases])
+        self.assertEqual({"Spec-Driven"}, {case["mode"] for case in cases if case["id"] in {"13", "14", "15", "17"}})
+        for case in cases:
+            expected_mode = "Spec-Driven" if case["id"] in {"13", "14", "15", "17"} else "Vibe-Coding"
+            self.assertEqual(expected_mode, case["mode"])
+            self.assertGreater(len(case["context"]), 1)
+            self.assertGreater(len(case["prompt"]), 30)
+            self.assertEqual(f"python3 demo.py codearts verify {case['id']}", case["acceptance"])
+            for context in case["context"]:
+                if context.startswith("#File "):
+                    self.assertTrue((ROOT / context.removeprefix("#File ")).exists(), context)
+
+    def test_codearts_project_rules_skill_commands_and_build(self):
+        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        self.assertIn("python3 demo.py codearts verify <ID>", agents)
+        skill = ROOT / ".codeartsdoer/skills/codearts-demo-runner/SKILL.md"
+        self.assertIn("name: codearts-demo-runner", skill.read_text(encoding="utf-8"))
+        status = (ROOT / ".codeartsdoer/skills/ProjectSkillStatus.txt").read_text(encoding="utf-8")
+        self.assertEqual("codearts-demo-runner=true", status.strip())
+        for name in ["demo-list", "demo-case", "demo-verify"]:
+            command = (ROOT / f".codeartsdoer/commands/{name}.md").read_text(encoding="utf-8")
+            self.assertTrue(command.startswith("---\n"))
+            self.assertIn("description:", command)
+        build = (ROOT / ".cloudbuild/build.yml").read_text(encoding="utf-8")
+        self.assertIn("version: 2.0", build)
+        self.assertIn("python3 demo.py verify --verbose", build)
+
+    def test_codearts_case_lookup_and_http_acceptance(self):
+        self.assertEqual("Spec-Driven", get_case("13")["mode"])
+        self.assertTrue(verify_case("08"))
 
 
 class HttpDemoTest(unittest.TestCase):

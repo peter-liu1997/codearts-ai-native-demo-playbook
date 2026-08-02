@@ -31,7 +31,7 @@ def verify_all(verbose: bool = False) -> bool:
     BUILD.mkdir(parents=True, exist_ok=True)
     checks = []
     checks.append(_run("Python 语法编译", [sys.executable, "-m", "compileall", "-q", "demo.py", "playbook", "tests"], verbose))
-    checks.append(_run("Python/HTTP/静态/SDD 18 项测试", [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"], verbose))
+    checks.append(_run("Python/HTTP/静态/SDD/CodeArts 测试", [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"], verbose))
 
     javac, java = shutil.which("javac"), shutil.which("java")
     if javac and java:

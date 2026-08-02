@@ -43,6 +43,15 @@ def main():
     case = sub.add_parser("case", help="运行指定案例")
     case.add_argument("id")
     case.add_argument("--port", type=int, default=8000)
+    codearts = sub.add_parser("codearts", help="查看码道演示卡或执行逐案例验收")
+    codearts_sub = codearts.add_subparsers(dest="codearts_command", required=True)
+    codearts_sub.add_parser("list", help="列出 20 个码道场景、模式和验收命令")
+    codearts_show = codearts_sub.add_parser("show", help="显示指定案例的模式、上下文、提示词和验收")
+    codearts_show.add_argument("id")
+    codearts_prompt = codearts_sub.add_parser("prompt", help="仅输出可粘贴到码道的演示提示词")
+    codearts_prompt.add_argument("id")
+    codearts_verify = codearts_sub.add_parser("verify", help="执行指定案例的功能验收")
+    codearts_verify.add_argument("id")
     args = parser.parse_args()
 
     if args.command == "list":
@@ -57,6 +66,17 @@ def main():
         serve(args.host, args.port)
     elif args.command == "case":
         run_case(args.id, args.port)
+    elif args.command == "codearts":
+        from playbook.codearts import print_matrix, show_case, verify_case
+
+        if args.codearts_command == "list":
+            print_matrix()
+        elif args.codearts_command == "show":
+            show_case(args.id)
+        elif args.codearts_command == "prompt":
+            show_case(args.id, prompt_only=True)
+        elif args.codearts_command == "verify":
+            raise SystemExit(0 if verify_case(args.id) else 1)
 
 
 if __name__ == "__main__":
@@ -65,4 +85,3 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\n演示已停止。")
         sys.exit(130)
-
