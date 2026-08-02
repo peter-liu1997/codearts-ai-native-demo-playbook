@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CodeArts AI-Native 客户演示案例集</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark"></span>CodeArts AI-Native Demo Playbook</div>
+    <nav class="top-actions"><a href="/api/health">健康检查</a><a href="#cases">案例列表</a></nav>
+  </header>
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow">The CodeArts Playbook · Runnable Edition</div>
+      <h1>20 个可运行案例，一套完整客户演示路径</h1>
+      <p>从代码续写、Vibe Coding 与规范驱动，到遗留系统、鸿蒙开发、组织成熟度和商业 ROI。所有演示默认离线可运行，不保存云凭据。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#cases">开始选择案例</a>
+        <a class="btn btn-ghost" href="/demo/meeting-room">直接体验会议室原型</a>
+      </div>
+    </section>
+    <section class="stats">
+      <article class="stat"><strong>20</strong><span>附件显式实践案例</span></article>
+      <article class="stat"><strong>5</strong><span>技术形态：Java / Python / C / Web / ArkTS</span></article>
+      <article class="stat"><strong>0</strong><span>默认云凭据与第三方 Python 依赖</span></article>
+      <article class="stat"><strong>1 条命令</strong><span>完成全量冷启动验证</span></article>
+    </section>
+    <div class="section-title" id="cases"><div><h2>示例列表与码道能力</h2><p>点击带“可视化”标签的案例可直接进入交互页面。</p></div></div>
+    <div class="filters" id="filters">
+      <button class="filter-chip active" data-filter="all">全部</button>
+      <button class="filter-chip" data-filter="Web">可视化</button>
+      <button class="filter-chip" data-filter="Java">Java</button>
+      <button class="filter-chip" data-filter="Python">Python</button>
+      <button class="filter-chip" data-filter="SDD">SDD</button>
+    </div>
+    <section class="case-grid" id="case-grid" aria-live="polite"></section>
+  </main>
+  <script src="/assets/common.js"></script>
+  <script>
+    const pages = { '07':'/demo/meeting-room','08':'/demo/openai-mock','09':'/demo/dashboard','11':'/demo/api-hub','12':'/demo/ecommerce','16':'/demo/agent-portal','18':'/demo/harmony','19':'/demo/metrics','20':'/demo/roi' };
+    let cases = [];
+    async function load() {
+      cases = await fetch('/api/cases').then(r => r.json());
+      render(cases);
+    }
+    function render(rows) {
+      qs('#case-grid').innerHTML = rows.map(item => {
+        const href = pages[item.id] || '#';
+        const visual = pages[item.id] ? '<span class="tag tag-red">可视化</span>' : '<span class="tag">CLI</span>';
+        return `<a class="case-card" href="${href}" ${href === '#' ? `data-command="${escapeHtml(item.entry)}"` : ''}>
+          <span class="case-number">CASE ${item.id}</span><h3>${escapeHtml(item.name)}</h3>
+          <p>${escapeHtml(item.capability)}</p><p class="muted">${escapeHtml(item.source)} · ${escapeHtml(item.duration)}</p>
+          <div class="case-meta">${visual}<span class="tag">${escapeHtml(item.type)}</span></div></a>`;
+      }).join('');
+      qsa('[data-command]').forEach(card => card.addEventListener('click', event => {
+        event.preventDefault();
+        const command = card.dataset.command;
+        navigator.clipboard?.writeText(command);
+        toast(`命令已复制：${command}`);
+      }));
+    }
+    qsa('[data-filter]').forEach(button => button.addEventListener('click', () => {
+      qsa('[data-filter]').forEach(item => item.classList.remove('active'));
+      button.classList.add('active');
+      const key = button.dataset.filter;
+      render(key === 'all' ? cases : cases.filter(item => item.type.includes(key)));
+    }));
+    load().catch(error => qs('#case-grid').textContent = error.message);
+  </script>
+</body>
+</html>
