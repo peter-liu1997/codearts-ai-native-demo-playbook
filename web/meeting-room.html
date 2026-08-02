@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>会议室预约原型</title><link rel="stylesheet" href="/assets/styles.css">
+<style>
+  .booking-layout{display:grid;grid-template-columns:320px 1fr;gap:18px}.advanced{margin-top:12px;padding:14px;background:#f8fafc;border:1px solid var(--line);border-radius:12px}.room-list{display:grid;gap:9px}.room{border:1px solid var(--line);border-radius:12px;padding:13px;background:#fff;text-align:left}.room.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(19,102,214,.1)}.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.slot{border:1px solid var(--line);border-radius:9px;padding:10px 5px;background:#f7f9fc}.slot.selected{color:#fff;background:var(--accent);border-color:var(--accent)}.summary{margin-top:14px;padding:12px;border-radius:10px;background:#edf5ff;color:#144d92}@media(max-width:780px){.booking-layout{grid-template-columns:1fr}.slots{grid-template-columns:repeat(2,1fr)}}
+</style></head>
+<body><header class="topbar"><a class="brand" href="/"><span class="brand-mark"></span>会议室预约原型</a><div class="top-actions"><a href="/">返回案例门户</a></div></header>
+<main class="shell">
+  <div class="section-title"><div><h1 style="font-size:2rem;color:var(--ink)">快速找到合适的会议空间</h1><p>CASE 07 · 从手绘草图到可交互制品</p></div><span class="status status-good">原型可用</span></div>
+  <section class="card">
+    <div class="form-row"><label>城市<select id="city"><option>北京</option><option>上海</option><option>深圳</option><option>广州</option><option>杭州</option></select></label><label>楼宇<select id="building"></select></label></div>
+    <details class="advanced"><summary>高级搜索</summary><div class="form-row" style="margin-top:12px"><label>容纳人数<select id="capacity"><option value="all">全部人数</option><option value="small">小于 10 人</option><option value="medium">10-20 人</option><option value="large">20 人以上</option></select></label><label>会议室类型<select id="type"><option value="all">全部类型</option><option>普通会议室</option><option>培训教室</option><option>外部会议室</option></select></label></div></details>
+  </section>
+  <section class="booking-layout" style="margin-top:18px">
+    <div class="card"><h2>可用会议室</h2><div id="rooms" class="room-list"></div></div>
+    <div class="card"><div class="section-title" style="margin:0 0 14px"><div><h2>选择日期与时段</h2><p id="selected-date"></p></div><div><button class="btn btn-ghost" id="prev">‹</button> <button class="btn btn-ghost" id="next">›</button></div></div><div class="slots" id="slots"></div><div class="summary" id="summary">请选择会议室和连续时段</div><button class="btn btn-primary" id="confirm" style="width:100%;margin-top:12px">确认预约</button></div>
+  </section>
+</main>
+<div class="modal" id="modal"><div class="modal-panel"><h2>确认预约</h2><p id="modal-summary"></p><div class="form-actions"><button class="btn btn-primary" id="commit">确认</button><button class="btn" id="cancel">返回修改</button></div></div></div>
+<script src="/assets/common.js"></script><script>
+const buildings={北京:['北京基地 J1 号楼','北京基地 J3 号楼','北京基地 J5 号楼'],上海:['上海基地 H1 号楼','上海基地 H6 号楼','上海基地 H10 号楼'],深圳:['深圳基地 S1 号楼','深圳基地 S5 号楼','深圳基地 S9 号楼'],广州:['广州基地 G1 号楼','广州基地 G2 号楼'],杭州:['杭州基地 Z1 号楼','杭州基地 Z5 号楼','杭州基地 Z9 号楼']};
+const rooms=[{name:'启航',capacity:8,type:'普通会议室'},{name:'远见',capacity:12,type:'普通会议室'},{name:'共创',capacity:20,type:'培训教室'},{name:'会客厅',capacity:6,type:'外部会议室'},{name:'云帆',capacity:24,type:'培训教室'},{name:'星河',capacity:16,type:'普通会议室'}];
+let selectedRoom=null,selectedSlots=new Set(),offset=0;
+function setBuildings(){qs('#building').innerHTML=buildings[qs('#city').value].map(x=>`<option>${x}</option>`).join('')}
+function visible(room){const c=qs('#capacity').value,t=qs('#type').value;return(t==='all'||room.type===t)&&(c==='all'||c==='small'&&room.capacity<10||c==='medium'&&room.capacity>=10&&room.capacity<=20||c==='large'&&room.capacity>20)}
+function renderRooms(){qs('#rooms').innerHTML=rooms.filter(visible).map((r,i)=>`<button class="room ${selectedRoom?.name===r.name?'active':''}" data-room="${r.name}"><strong>${r.name}</strong><div class="muted">${r.capacity} 人 · ${r.type}</div></button>`).join('')||'<p class="muted">当前筛选无结果</p>';qsa('[data-room]').forEach(b=>b.onclick=()=>{selectedRoom=rooms.find(r=>r.name===b.dataset.room);renderRooms();summary()})}
+function renderSlots(){const day=new Date();day.setDate(day.getDate()+offset);qs('#selected-date').textContent=day.toLocaleDateString('zh-CN',{month:'long',day:'numeric',weekday:'short'});const times=[];for(let h=9;h<18;h++)for(const m of ['00','30'])times.push(`${String(h).padStart(2,'0')}:${m}`);qs('#slots').innerHTML=times.map(t=>`<button class="slot ${selectedSlots.has(t)?'selected':''}" data-slot="${t}">${t}</button>`).join('');qsa('[data-slot]').forEach(b=>b.onclick=()=>{selectedSlots.has(b.dataset.slot)?selectedSlots.delete(b.dataset.slot):selectedSlots.add(b.dataset.slot);renderSlots();summary()})}
+function summary(){const slots=[...selectedSlots].sort();qs('#summary').textContent=selectedRoom&&slots.length?`${selectedRoom.name} · ${slots[0]} - ${slots.at(-1)} · ${qs('#building').value}`:'请选择会议室和时段'}
+qs('#city').onchange=()=>{setBuildings();summary()};qs('#building').onchange=summary;qs('#capacity').onchange=renderRooms;qs('#type').onchange=renderRooms;qs('#prev').onclick=()=>{offset--;renderSlots()};qs('#next').onclick=()=>{offset++;renderSlots()};qs('#confirm').onclick=()=>{if(!selectedRoom||!selectedSlots.size)return toast('请先选择会议室和时段');qs('#modal-summary').textContent=qs('#summary').textContent;qs('#modal').classList.add('open')};qs('#cancel').onclick=()=>qs('#modal').classList.remove('open');qs('#commit').onclick=()=>{qs('#modal').classList.remove('open');toast('预约成功，反馈闭环已完成')};setBuildings();renderRooms();renderSlots();summary();
+</script></body></html>
+
