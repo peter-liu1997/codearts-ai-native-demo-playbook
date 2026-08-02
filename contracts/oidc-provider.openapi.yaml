@@ -1,0 +1,65 @@
+openapi: 3.0.3
+info:
+  title: IAM OIDC Trust Delegation Demo
+  version: 1.0.0
+paths:
+  /api/oidc/providers:
+    get:
+      summary: List OIDC providers
+      responses:
+        '200':
+          description: Provider list
+    post:
+      summary: Create an OIDC provider
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProvider'
+      responses:
+        '201':
+          description: Provider created
+        '400':
+          description: Contract or trust-boundary violation
+  /api/oidc/providers/{providerId}/exchange:
+    post:
+      summary: Exchange an external subject token for temporary credentials
+      parameters:
+        - in: path
+          name: providerId
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [clientId, subjectToken]
+              properties:
+                clientId: { type: string }
+                subjectToken: { type: string }
+      responses:
+        '200':
+          description: Temporary credentials with a 15-minute lifetime
+        '403':
+          description: Trust validation failed
+components:
+  schemas:
+    CreateProvider:
+      type: object
+      required: [issuer, clientIds]
+      properties:
+        issuer:
+          type: string
+          format: uri
+          example: https://idp.demo.local
+        clientIds:
+          type: array
+          minItems: 1
+          items: { type: string }
+        fingerprint:
+          type: string
+          description: Optional SHA-1 or SHA-256 hex digest for private CA scenarios
+
