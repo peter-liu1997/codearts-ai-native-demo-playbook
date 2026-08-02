@@ -1,0 +1,8 @@
+# timestamp_us|name|phase|pid|tid|duration_us
+1000|load_config|X|10|1|240
+1300|parse_request|B|10|2|0
+1550|parse_request|E|10|2|0
+bad timestamp|invalid_row|X|10|2|5
+1700|database_query|X|10|3|420
+2200|response_sent|i|10|1|0
+
