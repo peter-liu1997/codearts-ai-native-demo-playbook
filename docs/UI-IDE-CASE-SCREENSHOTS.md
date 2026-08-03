@@ -6,6 +6,18 @@
 
 > 当前华为云账号套餐被冻结，因此 AI 对话无法返回结果。截图右侧保留这一真实提示；模式、上下文和提示词由 IDE 集成终端中的 `python3 demo.py codearts show <ID>` 展示。恢复套餐后应补充 AI 对话响应截图，不能把当前状态宣称为 AI 对话已通过。
 
+## 码道能力口径
+
+为避免演示只展示“生成了代码”，每个案例页都补充了项目背景、演示边界和本案例实际使用的码道能力。能力描述以华为云当前官方文档为口径：
+
+- [探索模式（Vibe-Coding）](https://support.huaweicloud.com/usermanual-codeartssnap/codeartsdoer_ug_0101.html)：用于目标仍需边做边澄清的任务，通过多轮交互快速形成可运行结果。
+- 规范驱动模式（Spec-Driven）：用于安全、兼容性或验收要求明确的任务，先形成 `spec.md`、`design.md`、`tasks.md`，再按任务实施和追踪。
+- [上下文管理](https://support.huaweicloud.com/usermanual-codeartssnap/codeartsdoer_ug_0009.html)：用 `#File`、`#Folder`、`#Symbol`、`#Git`、`#Terminal Last Command` 等上下文限定证据范围。
+- [斜杠命令](https://support.huaweicloud.com/usermanual-codeartssnap/codeartsdoer_ug_0038.html)：本项目用 `/demo-case` 统一 20 个案例的演示提示词、步骤和输出格式。
+- [项目 Skill](https://support.huaweicloud.com/usermanual-codeartssnap/codeartsdoer_ug_0024.html)：仓库在 `.codeartsdoer/skills` 中沉淀可复用的排障、验证和交付方法。
+
+每页“客户价值”描述的是该案例能够证明的工程能力，不代表当前冻结套餐下的 AI 对话已经通过；实际程序功能仍以独立验收和全量测试结果为准。
+
 ## 逐例入口
 
 | ID | 案例 | 类型 | 截图 | 分页 |

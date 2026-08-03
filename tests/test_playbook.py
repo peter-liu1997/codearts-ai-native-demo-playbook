@@ -199,6 +199,16 @@ class RepositoryContractTest(unittest.TestCase):
             self.assertEqual(expected, len(case_images), case_id)
             self.assertIn(f"ui-ide-cases/CASE-{case_id:02d}.md", index)
             self.assertIn(f"# 案例 {case_id:02d}", case_guide)
+            for marker in [
+                "## 项目背景",
+                "## 本案例使用的码道能力",
+                "| 工作模式 |",
+                "| 关键上下文 |",
+                "| 智能工程动作 |",
+                "| 验证与治理 |",
+                "| 客户价值 |",
+            ]:
+                self.assertIn(marker, case_guide, f"{marker}: case {case_id:02d}")
             for image in case_images:
                 self.assertGreater(image.stat().st_size, 50_000, image)
                 self.assertIn(f"./{image.name}", case_guide)
