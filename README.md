@@ -4,7 +4,12 @@
 
 ## 在 CodeArts Agent IDE 中演示
 
-打开仓库根目录后，在码道对话中使用：
+打开仓库根目录后，保持左侧资源管理器、中央编辑器、右侧 AI 对话和底部终端可见：
+
+1. `⌘P` 打开 `codearts/cases.json`。
+2. 右侧新建对话，选择 Vibe-Coding 或 Spec-Driven。
+3. 在输入框键入 `#`，从 UI 添加当前文件、Git、Terminal、Rules 等上下文。
+4. 在码道对话中使用：
 
 ```text
 /demo-list
@@ -12,9 +17,11 @@
 /demo-verify
 ```
 
-项目级规则位于 `AGENTS.md`，Skill 位于 `.codeartsdoer/skills/`，自定义命令位于 `.codeartsdoer/commands/`；20 个场景的模式、上下文、提示词和验收命令位于 `codearts/cases.json`。完整操作见 [基于华为云码道的运行与客户演示指导](docs/CODEARTS-DEMO-GUIDE.md)。
+5. Web 案例通过 `⇧⌘P` → `Simple Browser: Show` 在 IDE 内置浏览器中展示。
 
-## 三条命令开始演示
+项目级规则位于 `AGENTS.md`，Skill 位于 `.codeartsdoer/skills/`，自定义命令位于 `.codeartsdoer/commands/`；20 个场景的模式、上下文、提示词和验收命令位于 `codearts/cases.json`。逐点击操作见 [IDE UI 客户演示手册](docs/UI-IDE-DEMO.md)，完整方法见 [码道运行与客户演示指导](docs/CODEARTS-DEMO-GUIDE.md)。
+
+## IDE 底部终端验收
 
 ```bash
 python3 demo.py list
@@ -23,7 +30,7 @@ python3 demo.py verify
 python3 demo.py serve --port 8000
 ```
 
-浏览器打开 `http://127.0.0.1:8000`，即可进入统一演示门户。也可以直接运行单个案例：
+这些命令应从 CodeArts Agent IDE 的底部终端执行。统一门户启动后，使用 IDE 的 `Simple Browser: Show` 打开 `http://127.0.0.1:8000`。也可以运行单个案例：
 
 ```bash
 python3 demo.py case 01
@@ -49,6 +56,7 @@ python3 demo.py codearts verify 13
 - [示例总览与能力映射](docs/CASE-INVENTORY.md)：20 个案例、来源页、演示形态和码道能力。
 - [逐例客户演示指导](docs/DEMO-GUIDE.md)：每例的启动、讲解、操作、预期结果和复位方法。
 - [码道原生演示指导](docs/CODEARTS-DEMO-GUIDE.md)：在 CodeArts Agent IDE 中选择模式、加载上下文、使用 Skill/命令和逐例验收。
+- [IDE UI 客户演示手册](docs/UI-IDE-DEMO.md)：图形界面布局、逐点击流程、Vibe/Spec 样板和 20 个案例 UI 索引。
 - [功能验证报告](docs/VALIDATION-REPORT.md)：20/20 案例、9/9 全量质量门、CodeArts IDE 与 GitHub 冷启动证据。
 - [原书提示词提炼](docs/PROMPTS.md)：把书中关键指令整理成可在码道中复用的提示词卡。
 - [提取范围与页码证据](docs/PDF-EXTRACTION-MAP.md)：说明什么被纳入、什么属于理论举例。

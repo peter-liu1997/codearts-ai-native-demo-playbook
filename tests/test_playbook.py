@@ -177,6 +177,13 @@ class RepositoryContractTest(unittest.TestCase):
         self.assertEqual("Spec-Driven", get_case("13")["mode"])
         self.assertTrue(verify_case("08"))
 
+    def test_ui_ide_demo_guide_covers_workflow_and_all_cases(self):
+        guide = (ROOT / "docs/UI-IDE-DEMO.md").read_text(encoding="utf-8")
+        for marker in ["Simple Browser: Show", "#` 上下文", "Vibe-Coding", "Spec-Driven", "套餐已被冻结", "预约成功"]:
+            self.assertIn(marker, guide)
+        for case_id in range(1, 21):
+            self.assertIn(f"| {case_id:02d} |", guide)
+
 
 class HttpDemoTest(unittest.TestCase):
     @classmethod

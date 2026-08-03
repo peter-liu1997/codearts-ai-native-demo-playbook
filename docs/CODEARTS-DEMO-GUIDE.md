@@ -1,19 +1,20 @@
 # 基于华为云码道的运行与客户演示指导
 
-这份指导把 20 个可运行成品变成 CodeArts Agent IDE 内可重复执行的演示流程。演示证据由四部分组成：码道对话、代码差异、案例级验收和全量质量门。
+这份指导把 20 个可运行成品变成 CodeArts Agent IDE 内可重复执行的演示流程。客户演示以 IDE 图形界面为主：左侧选文件、中央看代码、右侧与码道对话、底部看验收、内置浏览器做页面交互。完整逐点击手册见 [CodeArts Agent IDE UI 客户演示手册](UI-IDE-DEMO.md)。
 
 ## 1. 首次准备
 
-1. 登录 CodeArts Agent IDE，选择“文件 → 打开文件夹”，打开本仓库根目录。
-2. 确认项目内存在 `AGENTS.md`、`.codeartsdoer/skills/codearts-demo-runner/SKILL.md` 和 `.codeartsdoer/commands/`。
-3. 在 IDE 终端运行：
+1. 将 CodeArts Agent 安装到“应用程序”目录，登录并确认套餐状态正常；出现“套餐已被冻结”或“尚未获得此功能的访问权限”时，不进入 AI 对话演示。
+2. 选择“文件 → 打开文件夹”，打开本仓库根目录。
+3. 在左侧资源管理器确认项目内存在 `AGENTS.md`、`.codeartsdoer/skills/codearts-demo-runner/SKILL.md` 和 `.codeartsdoer/commands/`。
+4. 在右侧新建对话，按案例选择 Vibe-Coding 或 Spec-Driven；在输入框键入 `#` 添加 File、Folder、Git、Terminal 和 Rules 上下文。
+5. 在码道对话框输入 `/demo-list`。演示指定案例时输入 `/demo-case 案例 07`，完成后输入 `/demo-verify`。
+6. 只在 IDE 底部集成终端执行验收：
 
    ```bash
    python3 demo.py codearts list
    python3 demo.py verify --verbose
    ```
-
-4. 在码道对话框输入 `/demo-list`。演示指定案例时输入 `/demo-case`，并在同一条消息中说明案例编号，例如“案例 07”。完成后输入 `/demo-verify`。
 
 项目级 Skill 位于 `.codeartsdoer/skills/`，项目规则由根目录 `AGENTS.md` 自动提供；项目级自定义命令位于 `.codeartsdoer/commands/`。这些目录遵循当前 CodeArts Agent 官方约定。
 
@@ -21,12 +22,14 @@
 
 每个案例都按同一节奏执行：
 
-1. **选场景**：`python3 demo.py codearts show <ID>`。
-2. **选模式**：01-12、16、18-20 使用 Vibe-Coding；13-15、17 使用 Spec-Driven。
-3. **加上下文**：按案例卡添加 `#File`、`#Symbol`、`#Git` 或 `#TerminalLastCommand`。
-4. **让码道行动**：粘贴案例卡提示词，先让码道说明计划，再批准工具调用或修改。
-5. **看差异**：强调多文件修改、最小变更、真实符号引用和安全边界。
-6. **做验收**：`python3 demo.py codearts verify <ID>`，再执行 `python3 demo.py verify --verbose`。
+1. **选场景**：按 `⌘P` 打开 `codearts/cases.json`，在中央编辑器找到案例 ID。
+2. **选模式**：右侧新建对话；01-12、16、18-20 选择 Vibe-Coding，13-15、17 选择 Spec-Driven。
+3. **加上下文**：在输入框键入 `#`，从 UI 选择当前文件、File、Folder、Git、Terminal、Problems 或 Rules。
+4. **让码道行动**：输入 `/demo-case 案例 <ID>`，先审查计划，再批准相关修改。
+5. **看差异**：在中央编辑器和源代码管理视图查看多文件差异、最小变更和安全边界。
+6. **做验收**：在 IDE 底部终端执行 `python3 demo.py codearts verify <ID>`。
+7. **看页面**：按 `⇧⌘P`，选择 `Simple Browser: Show`，在 IDE 内置浏览器完成交互。
+8. **做总验收**：在 IDE 终端执行 `python3 demo.py verify --verbose`。
 
 CodeArts Agent 的 Vibe-Coding 适合快速迭代原型，Spec-Driven 适合需求、设计、任务与实现可追溯的复杂交付。四个 SDD 案例已有 `.codeartsdoer/specs/` 证据链，演示时不要跳过规格审查直接改代码。
 

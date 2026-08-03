@@ -7,10 +7,12 @@
 
 - 20/20 个案例的独立验收命令全部通过。
 - 全量冷启动质量门 9/9 阶段通过。
-- 21 项 Python 单元/HTTP/静态/SDD/CodeArts 契约测试通过。
+- 22 项 Python 单元/HTTP/静态/SDD/CodeArts/UI 文档契约测试通过。
 - 4 个 Java 程序完成编译和执行。
 - C11 设备内存案例在 `-Wall -Wextra -Werror` 下编译并通过测试。
-- 项目已在本机 CodeArts Agent IDE 中打开；集成终端成功读取 20 个案例，并通过 Spec-Driven 案例 13 的独立验收。
+- 项目已在本机 CodeArts Agent IDE 中打开；IDE 集成终端成功读取 20 个案例，并通过案例 07 与 Spec-Driven 案例 13 的独立验收。
+- IDE 的 `#` 上下文菜单已显示当前文件、File、Folder、Git、Terminal、Problems、Knowledge Bases 和 Rules。
+- IDE 内置简单浏览器完成案例 07 的会议室、09:30–10:00 时段、二次确认和预约成功交互。
 - GitHub Actions 从远端全新检出后通过：[verify-all-demos #30771520836](https://github.com/peter-liu1997/codearts-ai-native-demo-playbook/actions/runs/30771520836)。
 
 ## 验证环境
@@ -55,10 +57,11 @@ python3 demo.py codearts verify 13
 | C11 | 通过 | 严格编译、进程 upsert/退出、主进程保护 |
 | SDD | 4/4 | 日志转换、SMN、IAM OIDC、设备内存的 spec/design/tasks |
 | CodeArts 项目资产 | 通过 | `AGENTS.md`、Project Skill、自定义命令、`.cloudbuild/build.yml` |
+| CodeArts IDE UI | 部分通过 | 项目浏览、上下文菜单、集成终端、内置浏览器交互通过；AI 对话受套餐状态阻断 |
 | GitHub 冷启动 | 通过 | Ubuntu Runner 全量验证成功 |
 
 ## 尚未宣称通过的边界
 
-- CodeArts Agent 的 AI 对话需要用户完成华为云账号登录；本次已验证 IDE 项目加载和集成终端运行，未代替用户完成身份认证。
+- CodeArts Agent 已登录，但当前账号显示“套餐已被冻结/尚未获得功能访问权限”。`/demo-list` 已通过 UI 发起并返回权限错误，因此 AI 对话明确记为未通过；恢复套餐后需重新验证。
 - CodeArts Repo 导入和 CodeArts Build 云上任务需要登录后创建项目资源；仓库已提供 `.cloudbuild/build.yml`，但在实际云上执行前不宣称流水线已通过。
 - SMN、OIDC、鸿蒙云手机默认使用安全 Mock 或本地替身；真实云资源联调需在客户授权环境另行验证。
