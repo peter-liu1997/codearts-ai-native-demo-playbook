@@ -137,12 +137,17 @@ class RepositoryContractTest(unittest.TestCase):
             self.assertIn("<!doctype html>", text.lower())
             self.assertNotIn('src="http', text)
             self.assertNotIn('href="http', text)
+        meeting_room = (ROOT / "web/meeting-room.html").read_text(encoding="utf-8")
+        self.assertIn("function toggleSlot", meeting_room)
+        self.assertIn("请选择与当前时段相邻的连续时段", meeting_room)
 
     def test_sdd_evidence_chain_is_complete(self):
         for name in ["log-converter", "smn-alert-plugin", "iam-oidc", "device-memory"]:
             directory = ROOT / ".codeartsdoer/specs" / name
             for document in ["spec.md", "design.md", "tasks.md"]:
                 self.assertGreater((directory / document).stat().st_size, 100)
+        log_spec = (ROOT / ".codeartsdoer/specs/log-converter/spec.md").read_text(encoding="utf-8")
+        self.assertIn("5 条合法事件并跳过 1 条错误记录", log_spec)
 
     def test_codearts_matrix_covers_all_cases(self):
         cases = load_matrix()
@@ -179,13 +184,15 @@ class RepositoryContractTest(unittest.TestCase):
 
     def test_ui_ide_demo_guide_covers_workflow_and_all_cases(self):
         guide = (ROOT / "docs/UI-IDE-DEMO.md").read_text(encoding="utf-8")
-        for marker in ["Simple Browser: Show", "#` 上下文", "Vibe-Coding", "Spec-Driven", "套餐已被冻结", "预约成功"]:
+        for marker in ["Simple Browser: Show", "#` 上下文", "Vibe-Coding", "Spec-Driven", "套餐已恢复", "预约成功"]:
             self.assertIn(marker, guide)
         for case_id in range(1, 21):
             self.assertIn(f"| {case_id:02d} |", guide)
 
     def test_ui_ide_screenshot_walkthrough_has_all_98_images(self):
         index = (ROOT / "docs/UI-IDE-CASE-SCREENSHOTS.md").read_text(encoding="utf-8")
+        self.assertIn("华为云账号套餐已恢复", index)
+        self.assertNotIn("当前华为云账号套餐被冻结", index)
         case_guides = sorted((ROOT / "docs/ui-ide-cases").glob("CASE-*.md"))
         image_root = ROOT / "docs/ui-ide-cases"
         images = sorted(image_root.glob("case-*.jpg"))

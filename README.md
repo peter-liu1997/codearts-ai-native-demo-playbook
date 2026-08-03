@@ -37,7 +37,7 @@ python3 demo.py case 01
 python3 demo.py case 13
 python3 demo.py case 20
 
-# 查看码道案例卡并做独立功能验收
+# 查看码道真实对话并做独立功能验收
 python3 demo.py codearts show 13
 python3 demo.py codearts verify 13
 ```
