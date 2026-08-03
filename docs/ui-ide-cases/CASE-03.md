@@ -8,25 +8,25 @@
 
 查看分层结构入口。
 
-![案例 03 打开主文件](../images/ui-ide/case-03-01-source.jpg)
+![案例 03 打开主文件](./case-03-01-source.jpg)
 
 ## 步骤 2：码道案例卡
 
 核对多文件生成、架构和 CRUD 上下文。
 
-![案例 03 码道案例卡](../images/ui-ide/case-03-02-card.jpg)
+![案例 03 码道案例卡](./case-03-02-card.jpg)
 
 ## 步骤 3：实际运行
 
 查看商品创建和仓库输出。
 
-![案例 03 实际运行](../images/ui-ide/case-03-03-run.jpg)
+![案例 03 实际运行](./case-03-03-run.jpg)
 
 ## 步骤 4：独立验收
 
 确认案例级验收 PASS。
 
-![案例 03 独立验收](../images/ui-ide/case-03-04-verify.jpg)
+![案例 03 独立验收](./case-03-04-verify.jpg)
 
 完成后确认没有遗留案例服务器；Web 案例必须先 `Ctrl+C`，再执行独立验收。
 

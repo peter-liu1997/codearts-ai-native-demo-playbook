@@ -8,25 +8,25 @@
 
 检查六类控制器场景。
 
-![案例 04 打开主文件](../images/ui-ide/case-04-01-source.jpg)
+![案例 04 打开主文件](./case-04-01-source.jpg)
 
 ## 步骤 2：码道案例卡
 
 核对测试、实现和 Terminal 上下文。
 
-![案例 04 码道案例卡](../images/ui-ide/case-04-02-card.jpg)
+![案例 04 码道案例卡](./case-04-02-card.jpg)
 
 ## 步骤 3：实际运行
 
 确认六个场景通过。
 
-![案例 04 实际运行](../images/ui-ide/case-04-03-run.jpg)
+![案例 04 实际运行](./case-04-03-run.jpg)
 
 ## 步骤 4：独立验收
 
 确认案例级验收 PASS。
 
-![案例 04 独立验收](../images/ui-ide/case-04-04-verify.jpg)
+![案例 04 独立验收](./case-04-04-verify.jpg)
 
 完成后确认没有遗留案例服务器；Web 案例必须先 `Ctrl+C`，再执行独立验收。
 

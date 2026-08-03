@@ -187,7 +187,7 @@ class RepositoryContractTest(unittest.TestCase):
     def test_ui_ide_screenshot_walkthrough_has_all_98_images(self):
         index = (ROOT / "docs/UI-IDE-CASE-SCREENSHOTS.md").read_text(encoding="utf-8")
         case_guides = sorted((ROOT / "docs/ui-ide-cases").glob("CASE-*.md"))
-        image_root = ROOT / "docs/images/ui-ide"
+        image_root = ROOT / "docs/ui-ide-cases"
         images = sorted(image_root.glob("case-*.jpg"))
         self.assertEqual(20, len(case_guides))
         self.assertEqual(98, len(images))
@@ -201,7 +201,7 @@ class RepositoryContractTest(unittest.TestCase):
             self.assertIn(f"# 案例 {case_id:02d}", case_guide)
             for image in case_images:
                 self.assertGreater(image.stat().st_size, 50_000, image)
-                self.assertIn(f"../images/ui-ide/{image.name}", case_guide)
+                self.assertIn(f"./{image.name}", case_guide)
 
 
 class HttpDemoTest(unittest.TestCase):

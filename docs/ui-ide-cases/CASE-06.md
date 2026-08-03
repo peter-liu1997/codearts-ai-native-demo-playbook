@@ -8,25 +8,25 @@
 
 查看上下文装配逻辑。
 
-![案例 06 打开主文件](../images/ui-ide/case-06-01-source.jpg)
+![案例 06 打开主文件](./case-06-01-source.jpg)
 
 ## 步骤 2：码道案例卡
 
 核对 File、Git、Terminal 和 Rules 上下文。
 
-![案例 06 码道案例卡](../images/ui-ide/case-06-02-card.jpg)
+![案例 06 码道案例卡](./case-06-02-card.jpg)
 
 ## 步骤 3：实际运行
 
 查看事实、推断和待验证项。
 
-![案例 06 实际运行](../images/ui-ide/case-06-03-run.jpg)
+![案例 06 实际运行](./case-06-03-run.jpg)
 
 ## 步骤 4：独立验收
 
 确认案例级验收 PASS。
 
-![案例 06 独立验收](../images/ui-ide/case-06-04-verify.jpg)
+![案例 06 独立验收](./case-06-04-verify.jpg)
 
 完成后确认没有遗留案例服务器；Web 案例必须先 `Ctrl+C`，再执行独立验收。
 

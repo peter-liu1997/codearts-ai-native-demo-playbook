@@ -8,25 +8,25 @@
 
 检查 EARS 需求。
 
-![案例 13 打开主文件](../images/ui-ide/case-13-01-source.jpg)
+![案例 13 打开主文件](./case-13-01-source.jpg)
 
 ## 步骤 2：码道案例卡
 
 核对 Spec-Driven 证据链。
 
-![案例 13 码道案例卡](../images/ui-ide/case-13-02-card.jpg)
+![案例 13 码道案例卡](./case-13-02-card.jpg)
 
 ## 步骤 3：实际运行
 
 查看合法事件、隔离错误和 trace JSON。
 
-![案例 13 实际运行](../images/ui-ide/case-13-03-run.jpg)
+![案例 13 实际运行](./case-13-03-run.jpg)
 
 ## 步骤 4：独立验收
 
 确认案例级验收 PASS。
 
-![案例 13 独立验收](../images/ui-ide/case-13-04-verify.jpg)
+![案例 13 独立验收](./case-13-04-verify.jpg)
 
 完成后确认没有遗留案例服务器；Web 案例必须先 `Ctrl+C`，再执行独立验收。
 

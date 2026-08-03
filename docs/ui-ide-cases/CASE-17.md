@@ -8,25 +8,25 @@
 
 检查设备内存规格。
 
-![案例 17 打开主文件](../images/ui-ide/case-17-01-source.jpg)
+![案例 17 打开主文件](./case-17-01-source.jpg)
 
 ## 步骤 2：码道案例卡
 
 核对 C 实现和测试上下文。
 
-![案例 17 码道案例卡](../images/ui-ide/case-17-02-card.jpg)
+![案例 17 码道案例卡](./case-17-02-card.jpg)
 
 ## 步骤 3：实际运行
 
 运行 C11 严格编译和设备内存测试。
 
-![案例 17 实际运行](../images/ui-ide/case-17-03-run.jpg)
+![案例 17 实际运行](./case-17-03-run.jpg)
 
 ## 步骤 4：独立验收
 
 确认案例级验收 PASS。
 
-![案例 17 独立验收](../images/ui-ide/case-17-04-verify.jpg)
+![案例 17 独立验收](./case-17-04-verify.jpg)
 
 完成后确认没有遗留案例服务器；Web 案例必须先 `Ctrl+C`，再执行独立验收。
 

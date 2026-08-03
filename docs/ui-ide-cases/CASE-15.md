@@ -8,25 +8,25 @@
 
 查看接口契约。
 
-![案例 15 打开主文件](../images/ui-ide/case-15-01-source.jpg)
+![案例 15 打开主文件](./case-15-01-source.jpg)
 
 ## 步骤 2：码道案例卡
 
 核对 Spec-Driven 安全上下文。
 
-![案例 15 码道案例卡](../images/ui-ide/case-15-02-card.jpg)
+![案例 15 码道案例卡](./case-15-02-card.jpg)
 
 ## 步骤 3：实际运行
 
 创建 Provider 并交换演示临时凭证。
 
-![案例 15 实际运行](../images/ui-ide/case-15-03-run.jpg)
+![案例 15 实际运行](./case-15-03-run.jpg)
 
 ## 步骤 4：独立验收
 
 确认 HTTPS、Client ID 和 SSRF 边界。
 
-![案例 15 独立验收](../images/ui-ide/case-15-04-verify.jpg)
+![案例 15 独立验收](./case-15-04-verify.jpg)
 
 完成后确认没有遗留案例服务器；Web 案例必须先 `Ctrl+C`，再执行独立验收。
 
