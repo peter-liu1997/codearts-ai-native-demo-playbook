@@ -184,6 +184,25 @@ class RepositoryContractTest(unittest.TestCase):
         for case_id in range(1, 21):
             self.assertIn(f"| {case_id:02d} |", guide)
 
+    def test_ui_ide_screenshot_walkthrough_has_all_98_images(self):
+        index = (ROOT / "docs/UI-IDE-CASE-SCREENSHOTS.md").read_text(encoding="utf-8")
+        case_guides = sorted((ROOT / "docs/ui-ide-cases").glob("CASE-*.md"))
+        image_root = ROOT / "docs/images/ui-ide"
+        images = sorted(image_root.glob("case-*.jpg"))
+        self.assertEqual(20, len(case_guides))
+        self.assertEqual(98, len(images))
+        for case_id in range(1, 21):
+            expected = 6 if case_id in {7, 8, 9, 11, 12, 16, 18, 19, 20} else 4
+            case_images = sorted(image_root.glob(f"case-{case_id:02d}-*.jpg"))
+            case_guide_path = ROOT / f"docs/ui-ide-cases/CASE-{case_id:02d}.md"
+            case_guide = case_guide_path.read_text(encoding="utf-8")
+            self.assertEqual(expected, len(case_images), case_id)
+            self.assertIn(f"ui-ide-cases/CASE-{case_id:02d}.md", index)
+            self.assertIn(f"# 案例 {case_id:02d}", case_guide)
+            for image in case_images:
+                self.assertGreater(image.stat().st_size, 50_000, image)
+                self.assertIn(f"../images/ui-ide/{image.name}", case_guide)
+
 
 class HttpDemoTest(unittest.TestCase):
     @classmethod

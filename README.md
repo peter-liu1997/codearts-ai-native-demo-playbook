@@ -57,6 +57,7 @@ python3 demo.py codearts verify 13
 - [逐例客户演示指导](docs/DEMO-GUIDE.md)：每例的启动、讲解、操作、预期结果和复位方法。
 - [码道原生演示指导](docs/CODEARTS-DEMO-GUIDE.md)：在 CodeArts Agent IDE 中选择模式、加载上下文、使用 Skill/命令和逐例验收。
 - [IDE UI 客户演示手册](docs/UI-IDE-DEMO.md)：图形界面布局、逐点击流程、Vibe/Spec 样板和 20 个案例 UI 索引。
+- [20 案例逐步截图手册](docs/UI-IDE-CASE-SCREENSHOTS.md)：98 张真实 CodeArts Agent IDE 截图，覆盖每例从打开主文件到运行、交互和验收。
 - [功能验证报告](docs/VALIDATION-REPORT.md)：20/20 案例、9/9 全量质量门、CodeArts IDE 与 GitHub 冷启动证据。
 - [原书提示词提炼](docs/PROMPTS.md)：把书中关键指令整理成可在码道中复用的提示词卡。
 - [提取范围与页码证据](docs/PDF-EXTRACTION-MAP.md)：说明什么被纳入、什么属于理论举例。
